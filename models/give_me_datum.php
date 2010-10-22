@@ -22,7 +22,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		return true;
 	}
 
-	function insertData($modelName, $options) {
+	function insertData($modelName, $options = array()) {
 		$default = array(
 			'limit' => 20,
 			'insertId' => array(),
@@ -100,7 +100,6 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		extract($this->__compactAssoc($modelName));
 
 		if (!empty($hasOne) || !empty($hasMany) || !empty($hasAndBelongsToMany)) {
-
 			$foreignKey = Inflector::underscore($modelName) . '_id';
 			if (!isset($this->__ids[$foreignKey])) {
 				$ids = $this->{$modelName}->find('list', array('fields' => array('id')));
