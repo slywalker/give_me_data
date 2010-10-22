@@ -32,10 +32,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 
 		$this->__initModel($modelName);
 
-		$belongsTo = $this->{$modelName}->belongsTo;
-		$hasOne = $this->{$modelName}->hasOne;
-		$hasMany = $this->{$modelName}->hasMany;
-		$hasAndBelongsToMany = $this->{$modelName}->hasAndBelongsToMany;
+		extract($this->__compactAssoc($modelName));
 
 		$fields = $this->getFields($modelName);
 		$foreignKeys = Set::extract($belongsTo, '{s}.foreignKey');
@@ -100,10 +97,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 
 	function __setForeignKeyIds($modelName) {
 		$this->__initModel($modelName);
-
-		$hasOne = $this->{$modelName}->hasOne;
-		$hasMany = $this->{$modelName}->hasMany;
-		$hasAndBelongsToMany = $this->{$modelName}->hasAndBelongsToMany;
+		extract($this->__compactAssoc($modelName));
 
 		if (!empty($hasOne) || !empty($hasMany) || !empty($hasAndBelongsToMany)) {
 
@@ -378,6 +372,15 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		if (!isset($this->{$modelName})) {
 			$this->{$modelName} = ClassRegistry::init($modelName);
 		}
+	}
+
+	function __compactAssoc($modelName) {
+		$belongsTo = $this->{$modelName}->belongsTo;
+		$hasOne = $this->{$modelName}->hasOne;
+		$hasMany = $this->{$modelName}->hasMany;
+		$hasAndBelongsToMany = $this->{$modelName}->hasAndBelongsToMany;
+
+		return compact('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
 	}
 }
 ?>
