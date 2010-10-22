@@ -123,48 +123,13 @@ class GiveMeDatumTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$result = $this->GiveMeDatum->find('count');
-		$this->assertEqual($result, 30);
+		$this->assertEqual($result, 31);
 	}
 
 	function testGetFields() {
 		$result = $this->GiveMeDatum->getFields('Author');
-		$expected = array(
-			'id' => array(
-				'type' => 'integer',
-				'null' => false,
-				'default' => null,
-				'length' => 11,
-				'key' => 'primary',
-			),
-			'user' => array(
-				'type' => 'string',
-				'null' => true,
-				'default' => null,
-				'length' => 255,
-				'collate' => 'utf8_unicode_ci',
-				'charset' => 'utf8',
-			),
-			'password' => array(
-				'type' => 'string',
-				'null' => true,
-				'default' => null,
-				'length' => 255,
-				'collate' => 'utf8_unicode_ci',
-				'charset' => 'utf8',
-			),
-			'created' => array(
-				'type' => 'datetime',
-				'null' => true,
-				'default' => null,
-				'length' => null,
-			),
-			'updated' => array(
-				'type' => 'datetime',
-				'null' => true,
-				'default' => null,
-				'length' => null,
-			),
-		);
+		$result = array_keys($result);
+		$expected = array('id', 'user', 'password', 'email', 'created', 'updated');
 		$this->assertEqual($result, $expected);
 	}
 

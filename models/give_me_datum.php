@@ -1,8 +1,15 @@
 <?php
+App::import('Vendors', 'GiveMeData.Fake', array('file' => 'php-faker/faker.php'));
+
 class GiveMeDatum extends GiveMeDataAppModel {
 	var $name = 'GiveMeDatum';
 	var $actsAs = array('Tree');
 	var $order = array('lft' => 'ASC');
+
+	function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		$this->_Faker = new Faker;
+	}
 
 	function insertDataAll($limit = 20, $useDbConfig = null) {
 		$modelNames = $this->getAllModels($useDbConfig);
@@ -130,82 +137,109 @@ class GiveMeDatum extends GiveMeDataAppModel {
 				continue;
 			}
 
-			$insert = null;
-
-			if (!empty($options['insertId'][$fieldName])) {
-				$insert = $options['insertId'][$fieldName];
+			$insert = $this->__caseForeignKey($modelName, $fieldName, $options);
+			if ($insert === false) {
+				continue;
 			}
 
-			elseif ($fieldName === 'parent_id') {
-				$foreignKey = Inflector::underscore($modelName) . '_id';
-				$count = isset($this->__ids[$foreignKey]) ? count($this->__ids[$foreignKey]) : 0;
-				if (!$count) {
-					continue;
-				}
-				$key = mt_rand(0, ($count - 1));
-				$insert = $this->__ids[$foreignKey][$key];
+			if (is_null($insert)) {
+				$insert = $this->__caseGuess($fieldName, $field);
 			}
 
-			elseif (in_array($fieldName, $options['foreignKeys'])) {
-				$count = isset($this->__ids[$fieldName]) ? count($this->__ids[$fieldName]) : 0;
-				if (!$count) {
-					continue;
-				}
-				$key = mt_rand(0, ($count - 1));
-				$insert = $this->__ids[$fieldName][$key];
-
-			} else {
-
-				switch ($field['type']) {
-					case 'integer':
-					case 'float':
-						$insert = 1234;
-					break;
-
-					case 'string':
-					case 'binary':
-						$insert = "Lorem ipsum dolor sit amet";
-						if (!empty($field['length'])) {
-							 $insert = substr($insert, 0, (int)$field['length'] - 2);
-						}
-					break;
-
-					case 'timestamp':
-						$insert = time();
-					break;
-
-					case 'datetime':
-						$insert = date('Y-m-d H:i:s');
-					break;
-
-					case 'date':
-						$insert = date('Y-m-d');
-					break;
-
-					case 'time':
-						$insert = date('H:i:s');
-					break;
-
-					case 'boolean':
-						$insert = 1;
-					break;
-
-					case 'text':
-						$insert = "Lorem ipsum dolor sit amet, aliquet feugiat.";
-						$insert .= " Convallis morbi fringilla gravida,";
-						$insert .= " phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin";
-						$insert .= " venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla";
-						$insert .= " vestibulum massa neque ut et, id hendrerit sit,";
-						$insert .= " feugiat in taciti enim proin nibh, tempor dignissim, rhoncus";
-						$insert .= " duis vestibulum nunc mattis convallis.";
-					break;
-				}
-
+			if (is_null($insert)) {
+				$insert = $this->__caseDefault($field);
 			}
+
 			$record[$fieldName] = $insert;
 		}
 
 		return $record;
+	}
+
+	function __caseForeignKey($modelName, $fieldName, $options) {
+		if (!empty($options['insertId'][$fieldName])) {
+			return $options['insertId'][$fieldName];
+		}
+
+		if ($fieldName === 'parent_id' || in_array($fieldName, $options['foreignKeys'])) {
+			if ($fieldName === 'parent_id') {
+				$fieldName = Inflector::underscore($modelName) . '_id';
+			}
+			$count = isset($this->__ids[$fieldName]) ? count($this->__ids[$fieldName]) : 0;
+			if (!$count) {
+				return false;
+			}
+			$key = mt_rand(0, ($count - 1));
+			return $this->__ids[$fieldName][$key];
+		}
+
+		return null;
+	}
+
+	function __caseGuess($fieldName, $field) {
+		if (in_array($fieldName, array('email')) && $field['type'] === 'string') {
+			return $this->_Faker->Internet->email();
+		}
+
+		if (in_array($fieldName, array('pass', 'password')) && $field['type'] === 'string') {
+			return $this->_Faker->bothify('?#?#?#');
+		}
+
+		if (in_array($fieldName, array('phone', 'tel')) && $field['type'] === 'string') {
+			return $this->_Faker->Phone_Number->phone_number();
+		}
+
+		if (in_array($fieldName, array('name', 'user', 'username', 'tag', 'category')) && $field['type'] === 'string') {
+			return $this->_Faker->Internet->user_name();
+		}
+
+		if (in_array($fieldName, array('slug')) && $field['type'] === 'string') {
+			return $this->_Faker->lexify('???_???_???????');
+		}
+
+		return null;
+	}
+
+	function __caseDefault($field) {
+		switch ($field['type']) {
+			case 'integer':
+			case 'float':
+				$insert = $this->_Faker->numerify('####');
+			break;
+
+			case 'string':
+			case 'binary':
+				$insert = $this->_Faker->Lorem->sentence();
+				if (!empty($field['length'])) {
+					 $insert = substr($insert, 0, (int)$field['length'] - 2);
+				}
+			break;
+
+			case 'timestamp':
+				$insert = time();
+			break;
+
+			case 'datetime':
+				$insert = $this->_Faker->numerify('20##-0#-2# 0#:2#:3#');
+			break;
+
+			case 'date':
+				$insert = $this->_Faker->numerify('20##-0#-2#');
+			break;
+
+			case 'time':
+				$insert = $this->_Faker->numerify('0#:2#:3#');
+			break;
+
+			case 'boolean':
+				$insert = mt_rand(0, 1);
+			break;
+
+			case 'text':
+				$insert = $this->_Faker->Lorem->paragraph();
+			break;
+		}
+		return $insert;
 	}
 
 	function initTables($useDbConfig = null) {
