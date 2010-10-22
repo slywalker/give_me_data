@@ -9,6 +9,7 @@ Download to plugins
 ## USAGE
 
 Access http:://your-app/give_me_data
+
 Click! Give Me Data!
 
 ## LICENCE
