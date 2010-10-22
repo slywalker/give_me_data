@@ -3,7 +3,6 @@ class GiveMeDatum extends GiveMeDataAppModel {
 	var $name = 'GiveMeDatum';
 	var $actsAs = array('Tree');
 	var $order = array('lft' => 'ASC');
-	var $ignoreFields = array('created', 'modified', 'updated', 'lft', 'rght', 'weight');
 
 	function insertDataAll($limit = 20, $useDbConfig = null) {
 		$modelNames = $this->getAllModels($useDbConfig);
@@ -36,7 +35,8 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		$foreignKeys += Set::extract($hasAndBelongsToMany, '{s}.foreignKey');
 
 		for ($i=0; $i < $options['limit']; $i++) {
-			$data = $this->_makeRecorde($fields, $foreignKeys, $options['insertId']);
+			$_options = array('foreignKeys' => $foreignKeys, 'insertId' => $options['insertId']);
+			$data = $this->_makeRecorde($modelName, $fields, $_options);
 
 			if (!$options['cascade']) {
 				$conditions = array();
@@ -58,6 +58,8 @@ class GiveMeDatum extends GiveMeDataAppModel {
 			$options['insertId'][$foreignKey] = $this->{$modelName}->getInsertID();
 
 			if ($options['cascade']) {
+				$options['cascade'] = false;
+
 				$_options = array_merge($options, array('limit' => 1));
 				foreach ($hasOne as $alias => $assoc) {
 					if (!$this->insertData($assoc['className'], $_options)) {
@@ -111,20 +113,40 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		return true;
 	}
 
-	function _makeRecorde($fields, $foreignKeys = array(), $insertId = array()) {
+	function _makeRecorde($modelName, $fields, $options = array()) {
+		$default = array(
+			'foreignKeys' => array(),
+			'insertId' => array(),
+			'ignoreFields' => array('id', 'lft', 'rght'),
+		);
+		$options = array_merge($default, $options);
+
 		$record = array();
 		foreach ($fields as $fieldName => $field) {
-			$insert = null;
-
+			if (in_array($fieldName, $options['ignoreFields'])) {
+				continue;
+			}
 			if (isset($field['key']) && $field['key'] === 'primary') {
 				continue;
 			}
 
-			elseif (!empty($insertId[$fieldName])) {
-				$insert = $insertId[$fieldName];
+			$insert = null;
+
+			if (!empty($options['insertId'][$fieldName])) {
+				$insert = $options['insertId'][$fieldName];
 			}
 
-			elseif (in_array($fieldName, $foreignKeys)) {
+			elseif ($fieldName === 'parent_id') {
+				$foreignKey = Inflector::underscore($modelName) . '_id';
+				$count = isset($this->__ids[$foreignKey]) ? count($this->__ids[$foreignKey]) : 0;
+				if (!$count) {
+					continue;
+				}
+				$key = mt_rand(0, ($count - 1));
+				$insert = $this->__ids[$foreignKey][$key];
+			}
+
+			elseif (in_array($fieldName, $options['foreignKeys'])) {
 				$count = isset($this->__ids[$fieldName]) ? count($this->__ids[$fieldName]) : 0;
 				if (!$count) {
 					continue;
@@ -139,6 +161,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 					case 'float':
 						$insert = 1234;
 					break;
+
 					case 'string':
 					case 'binary':
 						$insert = "Lorem ipsum dolor sit amet";
@@ -146,21 +169,27 @@ class GiveMeDatum extends GiveMeDataAppModel {
 							 $insert = substr($insert, 0, (int)$field['length'] - 2);
 						}
 					break;
+
 					case 'timestamp':
 						$insert = time();
 					break;
+
 					case 'datetime':
 						$insert = date('Y-m-d H:i:s');
 					break;
+
 					case 'date':
 						$insert = date('Y-m-d');
 					break;
+
 					case 'time':
 						$insert = date('H:i:s');
 					break;
+
 					case 'boolean':
 						$insert = 1;
 					break;
+
 					case 'text':
 						$insert = "Lorem ipsum dolor sit amet, aliquet feugiat.";
 						$insert .= " Convallis morbi fringilla gravida,";

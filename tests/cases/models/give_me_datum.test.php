@@ -30,7 +30,20 @@ class Author extends AppModel {
 
 class Category extends AppModel {
 	var $name = 'Category';
-	var $hasMany = array('Post');
+	var $actsAs = 'Tree';
+	var $belongsTo = array(
+		'ParentCategory' => array(
+			'className' => 'Category',
+			'foreignKey' => 'parent_id',
+		),
+	);
+	var $hasMany = array(
+		'Post',
+		'ChildCategory' => array(
+			'className' => 'Category',
+			'foreignKey' => 'parent_id',
+		),
+	);
 }
 
 class Post extends AppModel {
@@ -68,7 +81,8 @@ class GiveMeDatumTestCase extends CakeTestCase {
 		$this->assertTrue(($result > 0));
 
 		$result = ClassRegistry::init('Post')->find('all');
-		// debug($result);
+		// $result = ClassRegistry::init('Category')->find('all');
+		debug($result);
 	}
 
 	function testInsertData() {
@@ -91,6 +105,16 @@ class GiveMeDatumTestCase extends CakeTestCase {
 		// $this->assertEqual($result, ($row * $row));
 		//
 		$result = ClassRegistry::init('Post')->find('all');
+		// debug($result);
+	}
+
+	function testInsertDataCascade() {
+		$result = $this->GiveMeDatum->insertData('Category', array('limit' => 4, 'cascade' => true));
+		$this->assertTrue($result);
+		$result = ClassRegistry::init('Category')->find('count');
+		$this->assertTrue(($result > 6));
+
+		$result = ClassRegistry::init('Category')->find('all');
 		// debug($result);
 	}
 
