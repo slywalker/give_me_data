@@ -1,11 +1,11 @@
 <div class="dummy index">
-	<h2><?php __('Dummy') ?></h2>
-<?php foreach ($dummys as $dummy): ?>
-	<h3><a name="<?php echo $dummy['Dummy']['name'] ?>"><?php echo $dummy['Dummy']['name']; ?></a></h3>
+	<h2><?php __('GiveMeData') ?></h2>
+<?php foreach ($giveMeData as $giveMeDatum): ?>
+	<h3><a name="<?php echo $giveMeDatum['GiveMeDatum']['name'] ?>"><?php echo $giveMeDatum['GiveMeDatum']['name']; ?></a></h3>
 
 	<h4><?php __('Associations'); ?></h4>
 	<?php
-	$options = unserialize($dummy['Dummy']['options']);
+	$options = unserialize($giveMeDatum['GiveMeDatum']['options']);
 	$associations = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
 	?>
 	<table>
@@ -26,16 +26,16 @@
 		<?php endif; ?>
 	<?php endforeach ?>
 	</table>
-	<?php echo $this->Html->link(__('Generate', true), array('action' => 'generate', $dummy['Dummy']['id'])); ?>
+	<?php echo $this->Html->link(__('Generate', true), array('action' => 'generate', $giveMeDatum['GiveMeDatum']['id'])); ?>
 
 	<h4><?php __('Fields'); ?></h4>
 	<table>
-		<?php foreach ($dummy['children'] as $children): ?>
+		<?php foreach ($giveMeDatum['children'] as $children): ?>
 			<tr>
-				<td><?php echo $children['Dummy']['name']; ?></td>
-				<td style="width:10em;"><?php echo $children['Dummy']['field_type']; ?></td>
-				<td style="width:5em;"><?php echo $children['Dummy']['length']; ?></td>
-				<td style="width:10em;"><?php echo $children['Dummy']['key']; ?></td>
+				<td><?php echo $children['GiveMeDatum']['name']; ?></td>
+				<td style="width:10em;"><?php echo $children['GiveMeDatum']['field_type']; ?></td>
+				<td style="width:5em;"><?php echo $children['GiveMeDatum']['length']; ?></td>
+				<td style="width:10em;"><?php echo $children['GiveMeDatum']['key']; ?></td>
 			</tr>
 		<?php endforeach ?>
 	</table>

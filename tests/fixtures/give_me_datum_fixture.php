@@ -1,7 +1,7 @@
 <?php
-/* Dummy Fixture generated on: 2010-10-21 11:10:44 : 1287627644 */
-class DummyFixture extends CakeTestFixture {
-	var $name = 'Dummy';
+/* GiveMeData Fixture generated on: 2010-10-21 11:10:44 : 1287627644 */
+class GiveMeDatumFixture extends CakeTestFixture {
+	var $name = 'GiveMeDatum';
 
 	var $fields = array(
 		'id' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_unicode_ci', 'charset' => 'utf8'),

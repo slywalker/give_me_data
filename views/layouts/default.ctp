@@ -28,7 +28,7 @@
 	<?php
 		echo $this->Html->meta('icon');
 
-		echo $this->Html->css('/dummy/css/cake.generic');
+		echo $this->Html->css('/give_me_data/css/cake.generic');
 
 		echo $scripts_for_layout;
 	?>

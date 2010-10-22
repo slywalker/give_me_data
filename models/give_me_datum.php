@@ -1,22 +1,22 @@
 <?php
-class Dummy extends DummyAppModel {
-	var $name = 'Dummy';
+class GiveMeDatum extends GiveMeDataAppModel {
+	var $name = 'GiveMeDatum';
 	var $actsAs = array('Tree');
 	var $order = array('lft' => 'ASC');
 	var $ignoreFields = array('created', 'modified', 'updated', 'lft', 'rght', 'weight');
 
-	function insertDummyAll($limit = 20, $useDbConfig = null) {
+	function insertDataAll($limit = 20, $useDbConfig = null) {
 		$modelNames = $this->getAllModels($useDbConfig);
 		$modelNames = $this->sortModels($modelNames);
 		foreach ($modelNames as $modelNames) {
-			if (!$this->insertDummy($modelNames, array('limit' => $limit, 'cascade' => false))) {
+			if (!$this->insertData($modelNames, array('limit' => $limit, 'cascade' => false))) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	function insertDummy($modelName, $options) {
+	function insertData($modelName, $options) {
 		$default = array(
 			'limit' => 20,
 			'insertId' => array(),
@@ -60,13 +60,13 @@ class Dummy extends DummyAppModel {
 			if ($options['cascade']) {
 				$_options = array_merge($options, array('limit' => 1));
 				foreach ($hasOne as $alias => $assoc) {
-					if (!$this->insertDummy($assoc['className'], $_options)) {
+					if (!$this->insertData($assoc['className'], $_options)) {
 						return false;
 					}
 				}
 
 				foreach ($hasMany as $alias => $assoc) {
-					if (!$this->insertDummy($assoc['className'], $options)) {
+					if (!$this->insertData($assoc['className'], $options)) {
 						return false;
 					}
 				}
@@ -74,7 +74,7 @@ class Dummy extends DummyAppModel {
 				$_options = array_merge($options, array('limit' => 5, 'cascade' => false));
 				foreach ($hasAndBelongsToMany as $alias => $assoc) {
 					if (!empty($this->__ids[$assoc['associationForeignKey']])) {
-						if (!$this->insertDummy($assoc['with'], 5, $_options)) {
+						if (!$this->insertData($assoc['with'], 5, $_options)) {
 							return false;
 						}
 					}
@@ -234,7 +234,7 @@ class Dummy extends DummyAppModel {
 			$score[$modelName] = $this->__loadAssocScore($modelName);
 		}
 		asort($score);
-var_dump($score);
+
 		$result = array();
 		foreach ($score as $modelName => $_score) {
 			$result[] = $modelName;

@@ -21,7 +21,7 @@ function dearr($var = false, $showHtml = false, $showFrom = true) {
 }
 
 /* Discount Test cases generated on: 2010-10-07 22:10:03 : 1286459283*/
-App::import('Model', 'Dummy.Dummy');
+App::import('Model', 'GiveMeData.GiveMeDatum');
 
 class Author extends AppModel {
 	var $name = 'Author';
@@ -49,20 +49,20 @@ class PostsTag extends AppModel {
 	var $belongsTo = array('Post', 'Tag');
 }
 
-class DummyTestCase extends CakeTestCase {
-	var $fixtures = array('plugin.dummy.dummy', 'plugin.dummy.author', 'plugin.dummy.post', 'plugin.dummy.tag', 'plugin.dummy.posts_tag', 'plugin.dummy.category');
+class GiveMeDatumTestCase extends CakeTestCase {
+	var $fixtures = array('plugin.give_me_data.give_me_datum', 'plugin.give_me_data.author', 'plugin.give_me_data.post', 'plugin.give_me_data.tag', 'plugin.give_me_data.posts_tag', 'plugin.give_me_data.category');
 
 	function startTest() {
-		$this->Dummy =& ClassRegistry::init('Dummy');
+		$this->GiveMeDatum =& ClassRegistry::init('GiveMeDatum');
 	}
 
 	function endTest() {
-		unset($this->Dummy);
+		unset($this->GiveMeDatum);
 		ClassRegistry::flush();
 	}
 
-	function testInsertDummyAll() {
-		$result = $this->Dummy->insertDummyAll(4);
+	function testInsertDataAll() {
+		$result = $this->GiveMeDatum->insertDataAll(4);
 		$this->assertTrue($result);
 		$result = ClassRegistry::init('Post')->find('count');
 		$this->assertTrue(($result > 0));
@@ -71,17 +71,17 @@ class DummyTestCase extends CakeTestCase {
 		// debug($result);
 	}
 
-	function testInsertDummy() {
+	function testInsertData() {
 		$row = 4;
-		$result = $this->Dummy->insertDummy('Tag', array('limit' => $row));
+		$result = $this->GiveMeDatum->insertData('Tag', array('limit' => $row));
 		$this->assertTrue($result);
 		$result = ClassRegistry::init('Tag')->find('count');
 		$this->assertEqual($result, $row);
 
-		$result = $this->Dummy->insertDummy('Author', array('limit' => $row));
+		$result = $this->GiveMeDatum->insertData('Author', array('limit' => $row));
 		$this->assertTrue($result);
 
-		$result = $this->Dummy->insertDummy('Category', array('limit' => $row));
+		$result = $this->GiveMeDatum->insertData('Category', array('limit' => $row));
 		$this->assertTrue($result);
 
 		// $result = ClassRegistry::init('Author')->find('count');
@@ -95,15 +95,15 @@ class DummyTestCase extends CakeTestCase {
 	}
 
 	function testInitTables() {
-		$result = $this->Dummy->initTables();
+		$result = $this->GiveMeDatum->initTables();
 		$this->assertTrue($result);
 
-		$result = $this->Dummy->find('count');
+		$result = $this->GiveMeDatum->find('count');
 		$this->assertEqual($result, 30);
 	}
 
 	function testGetFields() {
-		$result = $this->Dummy->getFields('Author');
+		$result = $this->GiveMeDatum->getFields('Author');
 		$expected = array(
 			'id' => array(
 				'type' => 'integer',
@@ -145,20 +145,20 @@ class DummyTestCase extends CakeTestCase {
 	}
 
 	function testSortModels() {
-		$modelNames = $this->Dummy->getAllModels();
-		$result = $this->Dummy->sortModels($modelNames);
+		$modelNames = $this->GiveMeDatum->getAllModels();
+		$result = $this->GiveMeDatum->sortModels($modelNames);
 		$expected = array('Tag', 'Author', 'Category', 'Post', 'PostsTag');
 		$this->assertEqual($result, $expected);
 	}
 
 	function testGetAllModels() {
-		$result = $this->Dummy->getAllModels();
+		$result = $this->GiveMeDatum->getAllModels();
 		$expected = array('Author', 'Category', 'Post', 'PostsTag', 'Tag');
 		$this->assertEqual($result, $expected);
 	}
 
 	function testGetAllTables() {
-		$result = $this->Dummy->getAllTables();
+		$result = $this->GiveMeDatum->getAllTables();
 		$expected = array('authors', 'categories', 'posts', 'posts_tags', 'tags');
 		$this->assertEqual($result, $expected);
 	}
