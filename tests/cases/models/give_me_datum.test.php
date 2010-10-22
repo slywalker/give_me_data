@@ -63,7 +63,14 @@ class PostsTag extends AppModel {
 }
 
 class GiveMeDatumTestCase extends CakeTestCase {
-	var $fixtures = array('plugin.give_me_data.give_me_datum', 'plugin.give_me_data.author', 'plugin.give_me_data.post', 'plugin.give_me_data.tag', 'plugin.give_me_data.posts_tag', 'plugin.give_me_data.category');
+	var $fixtures = array(
+		// 'plugin.give_me_data.give_me_datum',
+		'plugin.give_me_data.author',
+		'plugin.give_me_data.post',
+		'plugin.give_me_data.tag',
+		'plugin.give_me_data.posts_tag',
+		'plugin.give_me_data.category',
+	);
 
 	function startTest() {
 		$this->GiveMeDatum =& ClassRegistry::init('GiveMeDatum');
@@ -118,13 +125,13 @@ class GiveMeDatumTestCase extends CakeTestCase {
 		// debug($result);
 	}
 
-	function testInitTables() {
-		$result = $this->GiveMeDatum->initTables();
-		$this->assertTrue($result);
-
-		$result = $this->GiveMeDatum->find('count');
-		$this->assertEqual($result, 31);
-	}
+	// function testInitTables() {
+	// 	$result = $this->GiveMeDatum->initTables();
+	// 	$this->assertTrue($result);
+	//
+	// 	$result = $this->GiveMeDatum->find('count');
+	// 	$this->assertEqual($result, 31);
+	// }
 
 	function testGetFields() {
 		$result = $this->GiveMeDatum->getFields('Author');

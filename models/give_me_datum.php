@@ -3,6 +3,7 @@ App::import('Vendors', 'GiveMeData.Fake', array('file' => 'php-faker/faker.php')
 
 class GiveMeDatum extends GiveMeDataAppModel {
 	var $name = 'GiveMeDatum';
+	var $useTable = false;
 	var $actsAs = array('Tree');
 	var $order = array('lft' => 'ASC');
 
