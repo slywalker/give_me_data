@@ -15,7 +15,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		$modelNames = $this->getAllModels($useDbConfig);
 		$modelNames = $this->sortModels($modelNames);
 		foreach ($modelNames as $modelNames) {
-			if (!$this->insertData($modelNames, array('limit' => $limit, 'cascade' => false))) {
+			if (!$this->insertData($modelNames, array('limit' => $limit))) {
 				return false;
 			}
 		}
@@ -28,7 +28,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 			'insertId' => array(),
 			'cascade' => false,
 		);
-		$options = array_merge($default, $options);
+		$options = Set::merge($default, $options);
 
 		$this->__initModel($modelName);
 
@@ -62,17 +62,16 @@ class GiveMeDatum extends GiveMeDataAppModel {
 			$options['insertId'][$foreignKey] = $this->{$modelName}->getInsertID();
 
 			if ($options['cascade']) {
-				$options['cascade'] = false;
-
-				$_options = array_merge($options, array('limit' => 1));
+				$_options = array_merge($options, array('limit' => 1, 'cascade' => false));
 				foreach ($hasOne as $alias => $assoc) {
 					if (!$this->insertData($assoc['className'], $_options)) {
 						return false;
 					}
 				}
 
+				$_options = array_merge($options, array('cascade' => false));
 				foreach ($hasMany as $alias => $assoc) {
-					if (!$this->insertData($assoc['className'], $options)) {
+					if (!$this->insertData($assoc['className'], $_options)) {
 						return false;
 					}
 				}
