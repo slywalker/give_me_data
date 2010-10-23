@@ -7,16 +7,24 @@ class GiveMeDatum extends GiveMeDataAppModel {
 	var $actsAs = array('Tree');
 	var $order = array('lft' => 'ASC');
 
+	var $__ids = array();
+
 	function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
 		$this->_Faker = new Faker;
 	}
 
-	function insertDataAll($limit = 20, $useDbConfig = null) {
-		$modelNames = $this->getAllModels($useDbConfig);
+	function insertDataAll($options = array()) {
+		$default = array(
+			'limit' => 20,
+			'useDbConfig' => null,
+		);
+		$options = array_merge($default, $options);
+
+		$modelNames = $this->getAllModels($options['useDbConfig']);
 		$modelNames = $this->sortModels($modelNames);
 		foreach ($modelNames as $modelNames) {
-			if (!$this->insertData($modelNames, array('limit' => $limit))) {
+			if (!$this->insertData($modelNames, $options)) {
 				return false;
 			}
 		}
@@ -32,6 +40,8 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		$options = Set::merge($default, $options);
 
 		$this->__initModel($modelName);
+
+		$this->__setForeignKeyIds($modelName);
 
 		extract($this->__compactAssoc($modelName));
 
@@ -88,10 +98,6 @@ class GiveMeDatum extends GiveMeDataAppModel {
 			}
 		}
 
-		if (!$this->__setForeignKeyIds($modelName)) {
-			return false;
-		}
-
 		return true;
 	}
 
@@ -99,18 +105,19 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		$this->__initModel($modelName);
 		extract($this->__compactAssoc($modelName));
 
-		if (!empty($hasOne) || !empty($hasMany) || !empty($hasAndBelongsToMany)) {
-			$foreignKey = Inflector::underscore($modelName) . '_id';
-			if (!isset($this->__ids[$foreignKey])) {
-				$ids = $this->{$modelName}->find('list', array('fields' => array('id')));
-				if (empty($ids)) {
-					return false;
+		if (!empty($belongsTo)) {
+			foreach ($belongsTo as $alias => $_belongsTo) {
+				$_modelName = $_belongsTo['className'];
+				$_foreignKey = $_belongsTo['foreignKey'];
+				if ($_foreignKey === 'parent_id') {
+					$_foreignKey = Inflector::underscore($_modelName) . '_id';
 				}
+				$ids = $this->{$modelName}->{$alias}->find('list', array('fields' => array('id')));
 				sort($ids);
-				$this->__ids[$foreignKey] = $ids;
+				$this->__ids[$_foreignKey] = $ids;
 			}
 		}
-		return true;
+		return $this->__ids;
 	}
 
 	function _makeRecorde($modelName, $fields, $options = array()) {

@@ -82,7 +82,7 @@ class GiveMeDatumTestCase extends CakeTestCase {
 	}
 
 	function testInsertDataAll() {
-		$result = $this->GiveMeDatum->insertDataAll(4);
+		$result = $this->GiveMeDatum->insertDataAll(array('limit' => 4));
 		$this->assertTrue($result);
 		$result = ClassRegistry::init('Post')->find('count');
 		$this->assertTrue(($result > 0));
@@ -116,13 +116,26 @@ class GiveMeDatumTestCase extends CakeTestCase {
 	}
 
 	function testInsertDataCascade() {
-		$result = $this->GiveMeDatum->insertData('Category', array('limit' => 4, 'cascade' => true));
+		$result = $this->GiveMeDatum->insertData('Category', array('limit' => 5, 'cascade' => true));
 		$this->assertTrue($result);
 		$result = ClassRegistry::init('Category')->find('count');
 		$this->assertTrue(($result > 6));
 
 		$result = ClassRegistry::init('Category')->find('all');
 		// debug($result);
+	}
+
+	function test__setForeignKeyIds() {
+		$result = $this->GiveMeDatum->__setForeignKeyIds('Category');
+		$expected = array('category_id' => array());
+		$this->assertEqual($result, $expected);
+
+		$result = $this->GiveMeDatum->insertData('Category', array('limit' => 5));
+		$this->assertTrue($result);
+
+		$result = $this->GiveMeDatum->__setForeignKeyIds('Category');
+		$expected = array('category_id' => array('1', '2', '3', '4', '5'));
+		$this->assertEqual($result, $expected);
 	}
 
 	// function testInitTables() {
