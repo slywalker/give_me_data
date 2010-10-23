@@ -6,7 +6,11 @@
 		'controller' => 'give_me_data',
 		'action' => 'please',
 	));
-
+	?>
+	<p>
+		<?php __d('give_me_data', 'Do you want more?'); ?>
+	</p>
+	<?php
 	$rows = array();
 	foreach ($content as $model) {
 		$rows[] = array(
@@ -26,7 +30,7 @@
 			)),
 		);
 	}
-	echo $toolbar->table($rows, array(), array('title' => 'Models'));
+	echo $toolbar->table($rows);
 	?>
 </div>
 
