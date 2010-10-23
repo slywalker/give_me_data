@@ -1,0 +1,26 @@
+h1. GiveMeData: Insert fake data plugin for CakePHP
+
+h2. Features
+
+* insert fake data with associate.
+
+h2. Usage
+
+First, put `give_me_data' directory on CAKE_CORE_INCLUDE_PATH/plugins or APP/plugins in your CakePHP application.
+Second, add the following code in app_controller.php.
+
+<pre>
+<?php
+class AppController extends Controller {
+    var $components = array('DebugKit.Toolbar' => array('panels' => 'GiveMeData.GiveMeData'));
+}
+?>
+</pre>
+
+h2. Requirement
+
+DebugKit
+
+h2. LICENCE
+
+Released under the MIT Licence
