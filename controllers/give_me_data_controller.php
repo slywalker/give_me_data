@@ -13,7 +13,7 @@ class GiveMeDataController extends GiveMeDataAppController {
 		} else {
 			$this->Session->setFlash(__('You could not get data...', true));
 		}
-		$this->redirect(array('action' => 'index'));
+		$this->redirect($this->referer());
 	}
 
 	function more($cascade = null, $model = null) {
@@ -25,7 +25,7 @@ class GiveMeDataController extends GiveMeDataAppController {
 		}
 		if (is_null($model)) {
 			$this->Session->setFlash(__('What\'s model?', true));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect($this->referer());
 		}
 
 		if ($this->GiveMeDatum->insertData($model, compact('cascade'))) {
@@ -33,7 +33,7 @@ class GiveMeDataController extends GiveMeDataAppController {
 		} else {
 			$this->Session->setFlash(__('You could not get more data...', true));
 		}
-		$this->redirect(array('action' => 'index'));
+		$this->redirect($this->referer());
 	}
 
 	// function init_tables() {
