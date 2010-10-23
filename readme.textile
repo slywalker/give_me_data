@@ -17,6 +17,8 @@ class AppController extends Controller {
 ?>
 </pre>
 
+!http://github.com/slywalker/give_me_data/raw/master/screenshot.png!
+
 h2. Requirement
 
 DebugKit
