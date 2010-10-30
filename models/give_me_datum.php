@@ -7,6 +7,8 @@ class GiveMeDatum extends GiveMeDataAppModel {
 	var $actsAs = array('Tree');
 	var $order = array('lft' => 'ASC');
 
+	var $ignoreFields = array('id', 'lft', 'rght');
+
 	var $__ids = array();
 
 	function __construct($id = false, $table = null, $ds = null) {
@@ -124,7 +126,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		$default = array(
 			'foreignKeys' => array(),
 			'insertId' => array(),
-			'ignoreFields' => array('id', 'lft', 'rght'),
+			'ignoreFields' => $this->ignoreFields,
 		);
 		$options = array_merge($default, $options);
 
