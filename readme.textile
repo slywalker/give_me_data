@@ -1,5 +1,11 @@
 h1. GiveMeData: Insert fake data plugin for CakePHP
 
+Now I want the data roughly. Such time for?
+
+In that case, Please leave GiveMeData Plugin for CakePHP.
+
+<a href="http://github.com/slywalker/give_me_data">http://github.com/slywalker/give_me_data</a>
+
 h2. Features
 
 * insert fake data with associate.
@@ -30,6 +36,96 @@ h3. More!
 h3. More and More!
 
 [More and More!] is to insert fake data in some table. (with cascade association hasOne and hasMany, hasAndBelongsToMany)
+
+h2. Customizing
+
+<a href="http://github.com/caius/php-faker">php-faker</a> used for data creation in this plugin.
+
+h3. GiveMeDatum::__caseGuess
+
+When you want to change the data format of field name, You can customize this method.
+
+<pre>
+	function __caseGuess($fieldName, $field) {
+		if (in_array($fieldName, array('email')) && $field['type'] === 'string') {
+			return $this->_Faker->Internet->email();
+		}
+
+		if (in_array($fieldName, array('pass', 'password')) && $field['type'] === 'string') {
+			return $this->_Faker->bothify('?#?#?#');
+		}
+
+		if (in_array($fieldName, array('phone', 'tel')) && $field['type'] === 'string') {
+			return $this->_Faker->Phone_Number->phone_number();
+		}
+
+		if (in_array($fieldName, array('name', 'user', 'username', 'tag', 'category')) && $field['type'] === 'string') {
+			return $this->_Faker->Internet->user_name();
+		}
+
+		if (in_array($fieldName, array('slug')) && $field['type'] === 'string') {
+			return $this->_Faker->lexify('???_???_???????');
+		}
+
+		return null;
+	}
+</pre>
+
+h3. GiveMeDatum::__caseDefault
+
+When you want to change default data format of field type, You can customize this method.
+
+<pre>
+	function __caseDefault($field) {
+		switch ($field['type']) {
+			case 'integer':
+			case 'float':
+				$insert = $this->_Faker->numerify('####');
+			break;
+
+			case 'string':
+			case 'binary':
+				$insert = $this->_Faker->Lorem->sentence();
+				if (!empty($field['length'])) {
+					 $insert = substr($insert, 0, (int)$field['length'] - 2);
+				}
+			break;
+
+			case 'timestamp':
+				$insert = time();
+			break;
+
+			case 'datetime':
+				$insert = $this->_Faker->numerify('20##-0#-2# 0#:2#:3#');
+			break;
+
+			case 'date':
+				$insert = $this->_Faker->numerify('20##-0#-2#');
+			break;
+
+			case 'time':
+				$insert = $this->_Faker->numerify('0#:2#:3#');
+			break;
+
+			case 'boolean':
+				$insert = mt_rand(0, 1);
+			break;
+
+			case 'text':
+				$insert = $this->_Faker->Lorem->paragraph();
+			break;
+		}
+		return $insert;
+	}
+</pre>
+
+h3. GiveMeDatum::$ignoreFields
+
+CakePHP automatically created in the field has better to specify here.
+
+<pre>
+	var $ignoreFields = array('id', 'lft', 'rght');
+</pre>
 
 h2. Requirement
 
