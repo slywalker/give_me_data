@@ -19,6 +19,18 @@ class AppController extends Controller {
 
 !http://github.com/slywalker/give_me_data/raw/master/screenshot.png!
 
+h3. Give me all
+
+[Give me all] is to insert fake data in all tables. (not cascade)
+
+h3. More!
+
+[More!] is to inset fake data in one table. (not cascade)
+
+h3. More and More!
+
+[More and More!] is to insert fake data in some table. (with cascade association hasOne and hasMany, hasAndBelongsToMany)
+
 h2. Requirement
 
 DebugKit
