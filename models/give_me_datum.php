@@ -196,7 +196,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		}
 
 		if (in_array($fieldName, array('name', 'user', 'username', 'tag', 'category')) && $field['type'] === 'string') {
-			return $this->_Faker->Internet->user_name();
+			return $fieldName . '_' . $this->_Faker->Internet->numerify('####');
 		}
 
 		if (in_array($fieldName, array('slug')) && $field['type'] === 'string') {
