@@ -134,7 +134,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		);
 		$options = array_merge($default, $options);
 
-		$record = array();
+		$this->__record = array();
 		foreach ($fields as $fieldName => $field) {
 			if (in_array($fieldName, $options['ignoreFields'])) {
 				continue;
@@ -149,17 +149,17 @@ class GiveMeDatum extends GiveMeDataAppModel {
 			}
 
 			if (is_null($insert)) {
-				$insert = $this->__caseGuess($fieldName, $field);
+				$insert = $this->__caseGuess($modelName, $fieldName, $field);
 			}
 
 			if (is_null($insert)) {
 				$insert = $this->__caseDefault($field);
 			}
 
-			$record[$fieldName] = $insert;
+			$this->__record[$fieldName] = $insert;
 		}
 
-		return $record;
+		return $this->__record;
 	}
 
 	function __caseForeignKey($modelName, $fieldName, $options) {
@@ -182,7 +182,7 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		return null;
 	}
 
-	function __caseGuess($fieldName, $field) {
+	function __caseGuess($modelName, $fieldName, $field) {
 		if (in_array($fieldName, array('email')) && $field['type'] === 'string') {
 			return $this->_Faker->Internet->email();
 		}
@@ -196,11 +196,19 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		}
 
 		if (in_array($fieldName, array('name', 'user', 'username', 'tag', 'category')) && $field['type'] === 'string') {
-			return $fieldName . '_' . $this->_Faker->Internet->numerify('####');
+			return implode(' ', array(
+				$modelName,
+				$fieldName,
+				$this->_Faker->Internet->numerify('####')
+			));
 		}
 
 		if (in_array($fieldName, array('slug')) && $field['type'] === 'string') {
-			return $this->_Faker->lexify('???_???_???????');
+			if (!empty($this->__record['name'])) {
+				return strtolower(Inflector::slug($this->__record['name']));
+			} else {
+				return $this->_Faker->lexify('???_???_???????');
+			}
 		}
 
 		return null;
