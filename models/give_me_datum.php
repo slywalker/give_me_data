@@ -4,8 +4,8 @@ App::import('Vendors', 'GiveMeData.Fake', array('file' => 'php-faker/faker.php')
 class GiveMeDatum extends GiveMeDataAppModel {
 	var $name = 'GiveMeDatum';
 	var $useTable = false;
-	var $actsAs = array('Tree');
-	var $order = array('lft' => 'ASC');
+	// var $actsAs = array('Tree');
+	// var $order = array('lft' => 'ASC');
 
 	var $ignoreFields = array(
 		'id',			// Primary
@@ -248,49 +248,49 @@ class GiveMeDatum extends GiveMeDataAppModel {
 		return $insert;
 	}
 
-	function initTables($useDbConfig = null) {
-		$modelNames = $this->getAllModels();
-		$modelNames = $this->sortModels($modelNames);
-
-		foreach ($modelNames as $modelName) {
-			$fields = $this->getFields($modelName);
-
-			$options = array(
-				'belongsTo' => $this->{$modelName}->belongsTo,
-				'hasOne' => $this->{$modelName}->hasOne,
-				'hasMany' => $this->{$modelName}->hasMany,
-				'hasAndBelongsToMany' => $this->{$modelName}->hasAndBelongsToMany,
-			);
-			$data = array(
-				'type' => 'model',
-				'name' => $modelName,
-				'options' => serialize($options),
-			);
-			$this->create();
-			if (!$this->save($data)) {
-				return false;
-			}
-			$parent_id = $this->getInsertID();
-
-			foreach ($fields as $fieldName => $options) {
-				$data = array(
-					'parent_id' => $parent_id,
-					'type' => 'field',
-					'name' => $fieldName,
-					'field_type' => $options['type'],
-					'length' => isset($options['length']) ? $options['length'] : 0,
-					'key' => isset($options['key']) ? $options['key'] : '',
-					'options' => serialize($options),
-				);
-				$this->create();
-				if (!$this->save($data)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
+	// function initTables($useDbConfig = null) {
+	// 	$modelNames = $this->getAllModels();
+	// 	$modelNames = $this->sortModels($modelNames);
+	//
+	// 	foreach ($modelNames as $modelName) {
+	// 		$fields = $this->getFields($modelName);
+	//
+	// 		$options = array(
+	// 			'belongsTo' => $this->{$modelName}->belongsTo,
+	// 			'hasOne' => $this->{$modelName}->hasOne,
+	// 			'hasMany' => $this->{$modelName}->hasMany,
+	// 			'hasAndBelongsToMany' => $this->{$modelName}->hasAndBelongsToMany,
+	// 		);
+	// 		$data = array(
+	// 			'type' => 'model',
+	// 			'name' => $modelName,
+	// 			'options' => serialize($options),
+	// 		);
+	// 		$this->create();
+	// 		if (!$this->save($data)) {
+	// 			return false;
+	// 		}
+	// 		$parent_id = $this->getInsertID();
+	//
+	// 		foreach ($fields as $fieldName => $options) {
+	// 			$data = array(
+	// 				'parent_id' => $parent_id,
+	// 				'type' => 'field',
+	// 				'name' => $fieldName,
+	// 				'field_type' => $options['type'],
+	// 				'length' => isset($options['length']) ? $options['length'] : 0,
+	// 				'key' => isset($options['key']) ? $options['key'] : '',
+	// 				'options' => serialize($options),
+	// 			);
+	// 			$this->create();
+	// 			if (!$this->save($data)) {
+	// 				return false;
+	// 			}
+	// 		}
+	// 	}
+	//
+	// 	return true;
+	// }
 
 	function getFields($modelName) {
 		$this->__initModel($modelName);
