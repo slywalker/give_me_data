@@ -7,7 +7,11 @@ class GiveMeDatum extends GiveMeDataAppModel {
 	var $actsAs = array('Tree');
 	var $order = array('lft' => 'ASC');
 
-	var $ignoreFields = array('id', 'lft', 'rght');
+	var $ignoreFields = array(
+		'id',			// Primary
+		'lft', 'rght',	// TreeBehavior
+		'weight',		// OrderedBehavior
+	);
 
 	var $__ids = array();
 
