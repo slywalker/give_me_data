@@ -18,7 +18,11 @@ Second, add the following code in app_controller.php.
 <pre>
 <?php
 class AppController extends Controller {
-    var $components = array('DebugKit.Toolbar' => array('panels' => 'GiveMeData.GiveMeData'));
+	var $components = array(
+		'DebugKit.Toolbar' => array(
+			'panels' => array('GiveMeData.GiveMeData')
+		)
+	);
 }
 ?>
 </pre>
